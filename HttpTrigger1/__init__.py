@@ -1,12 +1,22 @@
 import logging
-
+import io
 import azure.functions as func
-from openpyxl import Workbook, load_workbook
+import base64
+import json
+import pandas as pd
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
-    file = req.body('file')
+    file = req.get_json()
+    decrypted=base64.b64decode(file['body']['$content'])
+    toread = io.BytesIO()
+    toread.write(decrypted)
+    # toread.seek(0)
+    df = pd.read_excel(toread)
+    # print(df.to_json())
+    # db = json.loads(file['body']['$content']) 
+    # df = pd.DataFrame(db)
     if not file:
         try:
             req_body = req.get_json()
@@ -17,7 +27,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     if file:   
         # wb = load_workbook(file)  
-        return func.HttpResponse(file)
+        return func.HttpResponse(df.to_json())
         # return func.HttpResponse(wb.get_sheet_names())
     else:
         return func.HttpResponse(
