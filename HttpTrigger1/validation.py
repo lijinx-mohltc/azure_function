@@ -34,6 +34,18 @@ def validate(data):
                 Column('Q4FTBP', test),
                 Column('comments')
                 ])
+
+    # schema = pandas_schema.Schema([
+    #             Column('LHIN Program:  Revenue & Expenses'),
+    #             Column('Budget', test),
+    #             Column('Budget Adjustments', test),
+    #             Column('Total', test),
+    #             Column('YTD Actual', test),
+    #             Column('Q4 Forecast', test),
+    #             Column('Q4 $ Forecast Variance to Budget',test),
+    #             Column('Q4 % Forecast Variance to Budget', test),
+    #             Column('Comments\nExplanations are required where \nthe Q4 Forecasted % exceeds +/-10%')
+    #             ])
     errors = schema.validate(data)
     # for e in errors:
     #     print(e)
@@ -44,4 +56,5 @@ def validate(data):
     for e in errors:
         list.append(str(e))
     errors_index = {"row":[e.row for e in errors],"column":[e.column for e in errors]}
-    return list
+    print(errors_index)
+    return errors_index
